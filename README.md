@@ -18,9 +18,6 @@ modülleridir. Bu modülleri kurduktan sonra programı terminal kodlarıyla indi
 
 # Modül İndirme
 
-1. pip install beautifulsoup4
-2. pip install requests
-3. pip install art
-4. pip install tabulate
+pip install -r requirements.txt
 
 Bu modülleri indirerek programı kullanabilirsiniz.
