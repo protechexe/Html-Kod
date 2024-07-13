@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from tabulate import tabulate
+from termcolor import colored
 from art import *
 import platform
 import codecs
@@ -20,10 +21,10 @@ def PrintBanner():
 
 def PrintMenu():
     table = [
-        ["[INFO] Programa web site linkini girin"],
-        ["[INFO] Program web sitesinden HTML,CSS,JAVASCRİPT kodlarını çeker."],
-        ["[INFO] Sonrasında bunu 'main.txt' dosyasına yazar ve ilgili klasöre kaydeder."],
-        ["[INFO] Program sadece statü kodu 200 olan web siteden veri çekebilir."],
+        ["Programa web site linkini girin"],
+        ["Program web sitesinden HTML,CSS,JAVASCRİPT kodlarını çeker."],
+        ["Sonrasında bunu 'main.txt' dosyasına yazar ve ilgili klasöre kaydeder."],
+        ["Program sadece statü kodu 200 olan web siteden veri çekebilir."],
     ]
     headers = ["Program Bilgisi"]
     print(tabulate(table, headers, tablefmt="grid"))
@@ -39,6 +40,15 @@ def ProgramSuresi():
 def GetInput(prompt):
     return input("[?]" + prompt)
 
+def PrintInfo(message):
+    print(colored("[INFO] ","green") + message)
+
+def PrintSuccess(message):
+    print(colored("[SUCCESS] ","light_green") + message)
+
+def PrintError(message):
+    print(colored("[ERROR] ","red") + message)
+
 def GetDownloadPath():
     system = platform.system()
     if system == "Windows":
@@ -46,10 +56,7 @@ def GetDownloadPath():
     elif system == "Darwin":
         return os.path.join(os.path.expanduser("~"), "Downloads")
     elif system == "Linux":
-        if "ANDROİD_DATA" is os.environ:
-            return "/data/data/com.termux/files/home/downloads"
-        else:
-            return os.path.join(os.path.expanduser("~"), "Downloads")
+        return os.path.join(os.path.expanduser("~"), "Downloads")
     elif system == "Android" or "linux":
         return "/storage/emulated/0/Download"
     else:
@@ -57,7 +64,7 @@ def GetDownloadPath():
     
 def VeriYazdir():
     try:
-        url = GetInput("Lütfen sitenin linkini girin: ")
+        url = GetInput(" Lütfen sitenin linkini girin: ")
         url = requests.get(url)
 
         if url.status_code == 200:
@@ -77,15 +84,15 @@ def VeriYazdir():
                 dosya.write(formatted_html)
 
             
-            print("[INFO] Site kodları dosyaya yazılıp kaydediliyor..")
+            PrintInfo("Site kodları dosyaya yazılıp kaydediliyor..")
             time.sleep(3)
-            print(f"[INFO] Site kodları yazdırılıp {file_path} yoluna kaydedildi.")
+            PrintSuccess(f"Site kodları yazdırılıp {file_path} yoluna kaydedildi.")
         else:
-            print(f"[INFO] Siteden veri çekilemedi. Statü kodu: {url.status_code}")
-            print(f"[INFO] Statü kodu {url.status_code} olduğundan veri çekilemez.")
+            PrintError(f"[INFO] Siteden veri çekilemedi. Statü kodu: {url.status_code}")
+            PrintInfo(f"[INFO] Statü kodu {url.status_code} olduğundan veri çekilemez.")
 
     except Exception as e:
-        print("Bir hata oluştu.",e)
+        PrintInfo("Bir hata oluştu.",e)
 
     finally:
         ProgramSuresi()
@@ -94,4 +101,7 @@ while True:
     ClearScreen()
     PrintBanner()
     PrintMenu()
+    PrintInfo("Lütfen bekleyin..")
+    time.sleep(1)
+    print("-"*65)
     VeriYazdir()
